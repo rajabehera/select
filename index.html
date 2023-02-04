@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Select Drop-down</title>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-size: 18px;
+    }
+
+    .container {
+        max-width: 1024px;
+        margin: 0 auto;
+        margin-top: 80px;
+    }
+
+
+
+
+    .select-container {
+        position: relative;
+        margin: 0 auto;
+        width: 400px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    .select-container .select {
+        position: relative;
+        background: #0f0e11;
+        height: 60px;
+    }
+
+    .select-container .select::after {
+        position: absolute;
+        content: "";
+        width: 15px;
+        height: 15px;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%) rotate(45deg);
+        border-bottom: 2px solid white;
+        border-right: 2px solid white;
+        cursor: pointer;
+        transition: border-color 0.4s;
+    }
+
+    .select-container.active .select::after {
+        border: none;
+        border-left: 2px solid white;
+        border-top: 2px solid white;
+    }
+
+    .select-container .select input {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 0 15px;
+        background: none;
+        outline: none;
+        border: none;
+        font-size: 1.4rem;
+        color: white;
+        cursor: pointer;
+    }
+
+    .select-container .option-container {
+        position: relative;
+        background: #6e6477;
+        height: 0;
+        overflow-y: scroll;
+        transition: 0.4s;
+    }
+
+    .select-container.active .option-container {
+        height: 150px;
+    }
+
+    .select-container .option-container::-webkit-scrollbar {
+        border-left: 1px solid rgba(0, 0, 0, 0.2);
+        width: 10px;
+    }
+
+    .select-container .option-container::-webkit-scrollbar-thumb {
+        background: #0f0e11;
+    }
+
+    .select-container .option-container .option1,
+    .select-container .option-container .option2,
+    .select-container .option-container .option3 {
+        position: relative;
+        padding-left: 15px;
+        height: 60px;
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+    }
+
+    .select-container .option-container .option1.selected,
+    .select-container .option-container .option2.selected,
+    .select-container .option-container .option3.selected {
+        background: rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+    }
+
+    .select-container .option-container .option1:hover,
+    .select-container .option-container .option2:hover,
+    .select-container .option-container .option3:hover {
+        background: rgba(0, 0, 0, 0.2);
+        padding-left: 20px;
+    }
+
+    .select-container .option-container .option1 label,
+    .select-container .option-container .option2 label,
+    .select-container .option-container .option3 label {
+        font-size: 1.1rem;
+        color: white;
+        cursor: pointer;
+    }
+
+    .hide {
+        display: none!important;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Select Country State and City</h1>
+
+        <div class="select-container con">
+            <div class="select country" id="country">
+                <input type="text" id="input1" placeholder="Country" onkeyup="searchNow(this)">
+            </div>
+            <ul class="option-container ready" id="countries"></ul>
+
+        </div>
+        <div class="container hide" id="show-state">
+            <div class="select-container sta">
+                <div class="select state" id="state">
+                    <input type="text" id="input2" placeholder="State" onkeyup="searchNow(this)">
+                </div>
+                <ul class="option-container ready " id="states"></ul>
+            </div>
+        </div>
+
+        <div class="container hide" id="show-city">
+            <div class="select-container cit">
+                <div class="select city" id="city">
+                    <input type="text" id="input3" placeholder="City" onkeyup="searchNow(this)">
+                </div>
+                <ul class="option-container ready " id="cities"></ul>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <script>
+
+            function searchNow(ele) {
+                console.log('searching...',ele.parentNode.nextElementSibling.id);
+                var input, filter, ul, li, a, i, txtValue;
+                input = document.getElementById(ele.id);
+                filter = input.value.toUpperCase();
+                ul = document.getElementById(ele.parentNode.nextElementSibling.id);
+                li = ul.getElementsByTagName("li");
+                for (i = 0; i < li.length; i++) {
+                    a = li[i];
+                    txtValue = a.textContent || a.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        li[i].style.display = "";
+                    } else {
+                        li[i].style.display = "none";
+                    }
+                }
+            }
+            var countryObject = {
+                "India": {
+                    "Maharashtra": ["Pune", "Mumbai", "Nagpur", "Nashik"],
+                    "Goa": ["Panjim", "Madgao", "Vasco da Gama", "Mapusa"],
+                    "UP": ["Lucknow", "Ghaziabad", "Noida", "Kanpur"],
+                    "Odisha": ["Bhubaneshwar", "Paradeep", "Puri", "Cuttack"],
+                    "Gujrat": ["Ahemdabad", "Surat", "Barodra", "Bhuj"],
+                    "MP": ["Bhopal", "Ujjain", "Gawlior", "Rewa"],
+                    "Uttrakhand": ["Rishikesh", "Dehradun", "Mussorie", "Nainital"],
+                    "Kerala": ["Allepey", "Kochi", "Thrissur", "Kottayam"],
+                    "Rajasthan": ["Jaipur", "Alwar", "Ajmer", "Jodhpur"],
+                    "Bihar": ["Baxur", "Patna", "Siwan", "Gaya"]
+                },
+                "USA": {
+                    "Arizona": ["Phoenix", "Tucson", "Mesa", "Chandler"],
+                    "Alaska": ["Fairbanks", "Anchorage,", "Juneau", "Sitka"],
+                    "California ": ["Los Angeles", "San Diego", "San Jose", "San Francisco"],
+                    "Florida": ["Gainesville", "Macclenny", "Panama City", "Starke"],
+                    "Georgia": ["Baxley", "Pearson", "Alma", "Newton"],
+                    "Hawaii": ["East Honolulu", "Pearl City", "Waipahu", "Kahului"],
+                    "Missouri": ["Kansas City", "St. Louis", "Springfield", "Columbia"],
+                    "Oregon": ["Astoria", "Bend", "Florence", "Eugene"],
+                    "Texas": ["Houston", "Dallas", "Austin", "Fort Worth"],
+                    "Utah": ["Aneth", "Avon ", "Benjamin ", "Bluebell "]
+                },
+                "Australia": {
+                    "New South Wales": ["Sydney", "Gold Coast–Tweed Heads", "Newcastle–Maitland", "Canberra–Queanbeyan"],
+                    "Victoria": ["Melbourne", "Geelong", "Ballarat", "Bendigo"],
+                    "Queensland ": ["Brisbane", "Mackay", "Rockhampton", "Bundaberg"],
+                    "Western Australia": ["Perth", "Busselton ", "Geraldton ", "Albany"],
+                    "South Australia": ["Adelaide", "Mount Gambier", "Victor Harbor–Goolwa", "Whyalla"],
+                    "Tasmania": ["Ulverstone ", "Burnie–Wynyard", "Devonport ", "Launceston"],
+                    "Australian Capital Territory": ["Canberra–Queanbeyan", "Weston Creek", "Woden Valley", "North Canberra"],
+                    "Northern Territory": ["Darwin", "Alice Springs ", "Ballina ", "Lismore"],
+                    "Jervis Bay Territory": ["Mudgee ", "Esperance ", "Lithgow", "Muswellbrook "],
+                    "Norfolk Island": ["Kingaroy", "Parkes ", "Swan Hill ", "Portland"]
+                },
+                "Sweden": {
+                    "Angermannia": ["Gothenburg", "Stockholm", "Karlstad", "Västerås"],
+                    "Blechingia": ["Hedemora", "Haparanda", "Boras", "Djursholm"],
+                    "Bahusia ": ["Karlskoga", "Karlskrona", "Eskilstuna", "Eksjö"],
+                    "Dalecarlia": ["Boden", "Malmö", "Falun", "xyz"],
+                    "Dalia": ["Eslov", "Sigtuna", "Motala", "Bhuj"],
+                    "Gestricia": ["Trollhättan", "Skara", "Skövde", "Rewa"],
+                    "Gotlandia": ["Simrishamn", "Östersund", "Åmål", "Örebro"],
+                    "Hallandia": ["Oskarshamn", "Östhammar", "Thrissur", "Filipstad"],
+                    "Helsingia": ["Nora", "Ystad", "Koras", "Vooxja"],
+                    "Herdalia": ["Karlskrona", "Vaxjo", "Hedemora", "Kalmar"]
+                },
+                "Argentina": {
+                    "Buenos Aires": ["Rafael Castillo", "San Nicolás de los Arroyos ", "Tandil", "Florida"],
+                    "Mendoza": ["Maipú ", "San Rafael", "San Martín", "Luján de Cuyo"],
+                    "La Pampa ": ["Santa Rosa", "Eduardo Castex", "General Pico", "Guatraché"],
+                    "Chubut": ["Puerto Madryn", "Trelew ", "Esquel", "Sarmiento"],
+                    "San Luis": ["Villa Mercedes", "La Punta", "Merlo", "El Trapiche"],
+                    "San Juan": ["Rawson ", "Rivadavia", "Chimbas", "Sarandí"],
+                    "Santa Fe": ["Rafaela", "Fenado Tuerto", "Reconquista", "Reconquista"],
+                    "Santa Cruz": ["Río Gallegos", "Río Turbio", "Río Gallegos", "Puerto San Julián"],
+                    "Entre Ríos": ["Gualeguaychú", "Concepción del Uruguay", "Colón", "Crespo"],
+                    "Córdoba": ["San Francisco", "Villa Carlos Paz", "Villa María", "Bell Ville"]
+                },
+                "UAE": {
+                    "Abu Dhabi": ["Al Ajban", "Al Aryam", "Al Mirfa", "Al Shuwaib"],
+                    "Sharjah": ["Al Madam", "Dibba Al-Hisn", "Al Bataeh", "Al Hamriyah"],
+                    "Dubai": ["Al Awir", "Al Khawaneej", "Al Lisaili", "Lahbab"],
+                    "Umm al-Quwain": ["Al Rafaah", "Al Rashidya", "Falaj Al Mualla", "Masafi"],
+                    "Fujairah": ["Zubarah", "Mirbah", "Ghub", "Dadna"],
+                    "Ras Al Khaimah": ["Adhen", "Al Hamraniyah", "Al Jeer", "Al Qusaidat"],
+                    "Umm al-Quwain": ["Al Rafaah", "Al Rashidya", "Falaj Al Mualla", "Habshan"],
+                    "Ajman": ["Masfut", "Al Manama", "Al Faqa", "Al Hamriyah"],
+                    "Kalba": ["Dibba Al-Hisn", "Ghayathi", "Kalba", "Khor Fakkan"],
+                    "Ruwais": ["Baxur", "Ruwais", "Khor Fakkan", "Umm al-Quwain"]
+                },
+                "Germany": {
+                    "Baden-Württemberg": ["Gaggenau ", "Gaildorf ", "Gammertingen ", "Gernsbach"],
+                    "Hesse": ["Allendorf", "Alsfeld", "Amöneburg ", "Babenhausen"],
+                    "Bavaria": ["Bad Aibling", "Bad Brückenau", "Bad Griesbach im Rottal ", "Bad Kissingen"],
+                    "Saxony": ["Bad Lausick", "Bad Muskau ", "Bad Schandau", "Chemnitz"],
+                    "Mecklenburg-Western Pomerania": ["Crivitz", "Dargun", "Dassow", "Demmin "],
+                    "Thuringia": ["Erfurt", "Eisenberg ", "Eisfeld ", "Dingelstädt "],
+                    "Rhineland-Palatinate": ["Lambrecht (Pfalz)", "Kaisersesch ", "Idar-Oberstein ", "Hornbach"],
+                    "North Rhine-Westphalia": ["Kamp-Lintfort", "Kalkar ", "Isselburg", "Hurth"],
+                    "Schleswig-Holstein": ["Bargteheide ", "Brunsbüttel", "Elmshorn ", "Geesthacht "],
+                    "Saxony-Anhalt": ["Bad Lauchstädt", "Ballenstedt", "Barby (Elbe)", "Burg "]
+                },
+                "Russia": {
+                    "Republic of Bashkortostan ": ["Belebey", "Baymak", "Beloretsk", "Birsk"],
+                    "Altai Krai ": ["Biysk", "Madgao", "Belokurikha", "Novoaltaysk"],
+                    "Sverdlovsk": ["Kirovgrad", "Karpinsk", "Degtyarsk", "Bogdanovich"],
+                    "Novosibirsk": ["Novosibirsk", "Kuybyshev", "Kupino", "Kargat"],
+                    "Tula": ["Sokolniki", "Shchyokino", "Novomoskovsk", "Lipki"],
+                    "Tver": ["Tver", "Torzhok", "Staritsa", "Rzhev"],
+                    "Vologda": ["Krasavino", "Nikolsk", "Sokol", "Totma"],
+                    "Kemerovo": ["Guryevsk", "Kaltan", "Kemerovo", "Kiselyovsk"],
+                    "Moscow": ["Dedovsk", "Dmitrov", "Dolgoprudny", "Domodedovo"],
+                    "Perm Krai ": ["Berezniki", "Chaykovsky", "Cherdyn", "Chernushka"]
+                },
+                "China": {
+                    "Fujian": ["Nan'an", "Longyan", "Longhai", "Fuzhou"],
+                    "Gansu": ["Linxia", "Longnan", "Pingliang", "Qingyang"],
+                    "Hebei": ["Xinle", "Xingtai", "Wu'an", "Xinji"],
+                    "Shaanxi": ["Xianyang", "Xingping", "Yulin", "Weinan"],
+                    "Qinghai": ["Haidong", "Golmud", "Delingha", "Tongren"],
+                    "Ningxia": ["Zhongwei", "Yinchuan", "Wuzhong", "Shizuishan"],
+                    "Jiangsu": ["Gaoyou", "Hai'an", "Jiangyin", "Kunshan"],
+                    "Inner Mongolia": ["Arxan", "Baotou", "Bayannur", "Chifeng"],
+                    "Heilongjiang": ["Fujin", "Fuyuan", "Hailin", "Mishan"]
+                },
+                "Japan": {
+                    "Ehime": ["Shikokuchūō", "Seiyo", "Tōon", "Ōzu"],
+                    "Fukui": ["Awara", "Echizen", "Sakai", "Katsuyama"],
+                    "Fukuoka": ["Kasuga", "Munakata", "Dazaifu", "Koga"],
+                    "Gifu": ["Mizuho", "Toki", "Minokamo", "Seki"],
+                    "Hiroshima": ["Mihara", "Fukuyama", "Akitakata", "Etajima"],
+                    "Iwate": ["Takizawa", "Kuji", "Ninohe", "Ichinoseki"],
+                    "Uttrakhand": ["Rishikesh", "Dehradun", "Mussorie", "Nainital"],
+                    "Fukushima": ["Motomiya", "Kitakata", "Date", "Minamisōma"],
+                    "Chiba": ["Sakura", "Togane", "Narashino", "Ichihara"],
+                    "Aichi": ["Hekinan", "Toyota", "Komaki", "Inazawa"]
+                }
+            }
+
+
+
+
+
+            let selectContainerCon = document.querySelector(".con");
+            let selectContainerState = document.querySelector(".sta");
+            let selectContainerCity = document.querySelector(".cit");
+            let country = document.querySelector(".country");
+            let state = document.querySelector(".state");
+            let city = document.querySelector(".city");
+            let input1 = document.getElementById("input1");
+            let input2 = document.getElementById("input2");
+            let input3 = document.getElementById("input3");
+            let options;
+            var stat;
+            var cit;
+
+            var countries = Object.keys(countryObject);
+
+            country.onclick = () => {
+
+                if (selectContainerState.classList.contains("active")) {
+                    selectContainerState.classList.toggle("active");
+                }
+                if (selectContainerCity.classList.contains("active")) {
+                    selectContainerCity.classList.toggle("active");
+                }
+                document.getElementById('input2').value = '';
+                document.getElementById('input3').value = '';
+                selectContainerCon.classList.toggle("active");
+
+                var conLen = countries.length;
+                var ul = document.getElementById("countries");
+                ul.classList.add('ready');
+                console.log(conLen);
+                if (ul.classList.contains('ready')) {
+                    for (var i = 0; i < conLen; i++) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(countries[i]));
+                        li.classList.add('option1');
+                        ul.appendChild(li);
+                        ul.classList.remove('ready');
+                    }
+
+                }
+
+                options = document.querySelectorAll(".option1");
+                options.forEach((e, i) => {
+                    e.addEventListener("click", () => {
+                        console.log(e);
+                        input1.value = e.innerHTML;
+
+                        selectContainerCon.classList.remove("active");
+                        options.forEach((e) => {
+                            e.classList.remove("selected");
+                        });
+                        e.classList.add("selected");
+                        document.getElementById('show-state').classList.remove('hide');
+                        console.log(i);
+                        stat = i
+                        var elems = document.querySelectorAll('.option2');
+                            console.log(elems);
+                        for (var index = 0; index < elems.length; index++) {
+                            elems[index].classList.remove('option2');
+                            elems[index].classList.add('hide');
+                        }
+                    });
+                });
+
+
+            };
+
+            state.onclick = () => {
+                if (selectContainerCon.classList.contains("active")) {
+                    selectContainerCon.classList.toggle("active");
+                }
+                if (selectContainerCity.classList.contains("active")) {
+                    selectContainerCity.classList.toggle("active");
+                }
+                document.getElementById('input3').value = '';
+                selectContainerState.classList.toggle("active");
+                //  var countries = Object.values(countryObject);
+                var cities = Object.values(countries[stat]);
+                //    console.log(stat);
+                //   var cities = Object.values(countries[0]);
+                var states = Object.keys(countryObject).map((key) => countryObject[key]);
+                console.log(stat);
+                var ssss = states[stat];
+                var state2 = Object.keys(ssss).map((key) => key);
+                console.log(state2)
+                var statLen = state2.length;
+                var ul = document.getElementById("states");
+
+                // options.forEach(e => console.log(e));
+
+                // var array = [];
+                ul.classList.add('ready');
+
+                // console.log('ready', array);
+                if (ul.classList.contains('ready')) {
+                    for (var i = 0; i < statLen; i++) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(state2[i]));
+                        li.classList.add('option2');
+                        ul.appendChild(li);
+                        ul.classList.remove('ready');
+                    }
+
+                }
+
+                options = document.querySelectorAll(".option2");
+                options.forEach((e, j) => {
+                  //  j = 0;
+                    e.addEventListener("click", () => {
+
+                        input2.value = e.innerHTML;
+                        selectContainerState.classList.remove("active");
+                        options.forEach((e) => {
+                            e.classList.remove("selected");
+                        });
+                        e.classList.add("selected");
+                        console.log(j);
+                        cit = j
+                       // ul.removeChild(li);
+                        document.getElementById('show-city').classList.remove('hide');
+                        var elems = document.querySelectorAll('.option3');
+                            console.log(elems);
+                        for (var index = 0; index < elems.length; index++) {
+                            elems[index].classList.remove('option3');
+                            elems[index].classList.add('hide');
+                        }
+                    });
+                });
+
+
+            };
+
+
+
+            city.onclick = () => {
+                if (selectContainerState.classList.contains("active")) {
+                    selectContainerState.classList.toggle("active");
+                }
+                if (selectContainerCity.classList.contains("active")) {
+                    selectContainerCity.classList.toggle("active");
+                }
+                selectContainerCity.classList.toggle("active");
+                var countries = Object.values(countryObject);
+                var cities = Object.values(countries[stat]);
+                console.log(cities);
+                console.log(cit);
+                var ssss1 = cities[cit];
+                var state3 = Object.keys(cit).map((key) => key);
+               console.log(state3, ssss1);
+
+                var conLen = countries.length;
+                var ul = document.getElementById("cities");
+                ul.classList.add('ready');
+                //   console.log('ready', states);
+                if (ul.classList.contains('ready')) {
+                    for (var i = 0; i < ssss1.length; i++) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(ssss1[i]));
+                        li.classList.add('option3');
+                        ul.appendChild(li);
+                        ul.classList.remove('ready');
+                    }
+
+                }
+
+                options = document.querySelectorAll(".option3");
+                options.forEach((e) => {
+                    e.addEventListener("click", () => {
+
+                        input3.value = e.innerHTML;
+                        selectContainerCity.classList.remove("active");
+                        options.forEach((e) => {
+                            e.classList.remove("selected");
+                        });
+                        e.classList.add("selected");
+                    });
+                });
+
+
+            };
+        </script>
+</body>
+
+</html>
